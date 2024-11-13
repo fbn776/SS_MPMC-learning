@@ -16,7 +16,9 @@ int main() {
 
     int start, locctr, op_found, error = 0;
 
-    // Get the first line
+    // Get the first line, check if its 'START';
+    // If yes, set start = locctr = operand value of start (in hex);
+    // Else, set locctr to 0;
     fscanf(input_fp, "%s\t%s\t%s", label, opcode, operand);
     if (strcmp(opcode, "START") == 0) {
         sscanf(operand, "%X", &start);
@@ -25,10 +27,16 @@ int main() {
         locctr = 0;
     }
 
+    // Print the first line to intermediate (*<tab>PGM_NAME<tab>START<tab>LOCCTR)
     fprintf(intermediate_fp, "*\t%s\t%s\t%s\n", label, opcode, operand);
+
+    // Read the next line
     fscanf(input_fp, "%s\t%s\t%s", label, opcode, operand);
+    // If not END read next lines;
     while (strcmp(opcode, "END") != 0 && error == 0) {
+        // Print address to intermediate
         fprintf(intermediate_fp, "%4X\t", locctr);
+
         if (strcmp(label, "-") != 0) {
             if (strcmp(label, "*") != 0) {
                 while (fscanf(symtab_fp_read, "%s\t%s\t", symbol, address) != EOF) {
